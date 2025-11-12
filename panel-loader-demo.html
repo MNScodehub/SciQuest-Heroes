@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel 1 Loading Animation Demo | SciQuest Heroes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/panel-loader.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .font-fredoka { font-family: 'Fredoka', sans-serif; }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .comic-panel-3d {
+            background: white;
+            border: 5px solid #1e293b;
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow:
+                10px 10px 0 rgba(30, 41, 59, 0.3),
+                15px 15px 30px rgba(0,0,0,0.2);
+            transform-style: preserve-3d;
+        }
+
+        .speech-bubble-3d {
+            position: relative;
+            background: white;
+            border: 4px solid #1e293b;
+            border-radius: 25px;
+            padding: 24px;
+            box-shadow:
+                5px 5px 0 rgba(30, 41, 59, 0.3),
+                8px 8px 20px rgba(0,0,0,0.2);
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        .speech-bubble-3d::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 40px;
+            width: 0;
+            height: 0;
+            border: 24px solid transparent;
+            border-top-color: #1e293b;
+        }
+
+        .speech-bubble-3d::before {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 44px;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: white;
+            z-index: 1;
+        }
+
+        .demo-controls {
+            background: white;
+            border: 4px solid #1e293b;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border: 3px solid #1e293b;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            box-shadow: 0 4px 0 #166534, 0 6px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            margin: 8px;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 0 #166534, 0 9px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-demo:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #166534, 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-demo.secondary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 0 #1e40af, 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-demo.secondary:hover {
+            box-shadow: 0 7px 0 #1e40af, 0 9px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-demo.secondary:active {
+            box-shadow: 0 2px 0 #1e40af, 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="font-fredoka text-5xl md:text-6xl font-black mb-4 drop-shadow-2xl">
+                Panel 1 Loading Animation Demo
+            </h1>
+            <p class="text-xl md:text-2xl font-bold drop-shadow-lg">
+                Experience the smooth loading transitions for comic panels
+            </p>
+        </div>
+
+        <div class="demo-controls">
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-cog mr-2"></i>Loader Type:
+                </label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="loaderType" value="spinner" checked>
+                        <span>Spinner (Mr. Chloro Leaves)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="loaderType" value="skeleton">
+                        <span>Skeleton Loader</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-align-left mr-2"></i>Loading Text:
+                </label>
+                <input
+                    type="text"
+                    id="loadingText"
+                    value="Loading magical content"
+                    class="w-full px-4 py-3 border-3 border-slate-300 rounded-lg font-semibold focus:border-green-500 focus:outline-none"
+                >
+            </div>
+
+            <div class="text-center mt-6">
+                <button class="btn-demo" onclick="startDemo()">
+                    <i class="fas fa-play mr-2"></i>Start Loading Demo
+                </button>
+                <button class="btn-demo secondary" onclick="resetPanels()">
+                    <i class="fas fa-redo mr-2"></i>Reset All Panels
+                </button>
+            </div>
+        </div>
+
+        <div class="demo-grid">
+            <div id="panel1" class="comic-panel-3d">
+                <div class="text-8xl text-center mb-6">🌿</div>
+                <div class="speech-bubble-3d mb-16">
+                    <p class="font-fredoka font-bold text-slate-800 text-xl leading-relaxed">
+                        "Hi! I'm Mr. Chloro, and plants have MAGICAL powers!"
+                    </p>
+                </div>
+                <p class="text-center font-fredoka font-black text-slate-600 text-lg">🎬 Panel 1</p>
+            </div>
+
+            <div id="panel2" class="comic-panel-3d">
+                <div class="text-8xl text-center mb-6">👧✨</div>
+                <div class="speech-bubble-3d mb-16">
+                    <p class="font-fredoka font-bold text-slate-800 text-xl leading-relaxed">
+                        "Wow! You mean plants can EAT SUNLIGHT?!"
+                    </p>
+                </div>
+                <p class="text-center font-fredoka font-black text-slate-600 text-lg">🎬 Panel 2</p>
+            </div>
+
+            <div id="panel3" class="comic-panel-3d">
+                <div class="text-8xl text-center mb-6">☀️💧🍃</div>
+                <div class="speech-bubble-3d mb-16">
+                    <p class="font-fredoka font-bold text-slate-800 text-xl leading-relaxed">
+                        "Sun + Water + Air = My SECRET RECIPE!"
+                    </p>
+                </div>
+                <p class="text-center font-fredoka font-black text-slate-600 text-lg">🎬 Panel 3</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/panel-loader.js"></script>
+    <script>
+        let currentLoaders = [];
+
+        function getSelectedOptions() {
+            const loaderType = document.querySelector('input[name="loaderType"]:checked').value;
+            const loadingText = document.getElementById('loadingText').value;
+
+            return {
+                loaderType,
+                loadingText,
+                duration: 1500,
+                fadeInDuration: 600
+            };
+        }
+
+        function startDemo() {
+            resetPanels();
+
+            setTimeout(() => {
+                const options = getSelectedOptions();
+
+                const panel1Loader = PanelLoader.attachToPanel('#panel1', options);
+                if (panel1Loader) {
+                    panel1Loader.show();
+                    currentLoaders.push(panel1Loader);
+                }
+            }, 100);
+        }
+
+        function resetPanels() {
+            currentLoaders.forEach(loader => {
+                if (loader.loaderElement && loader.loaderElement.parentNode) {
+                    loader.loaderElement.remove();
+                }
+                if (loader.contentWrapper) {
+                    loader.contentWrapper.style.opacity = '1';
+                    loader.contentWrapper.classList.remove('loaded');
+                }
+                loader.panel.classList.remove('panel-loading-state');
+                loader.isLoading = false;
+            });
+
+            currentLoaders = [];
+
+            document.querySelectorAll('.comic-panel-3d').forEach(panel => {
+                const wrapper = panel.querySelector('.panel-content-wrapper');
+                if (wrapper) {
+                    const content = Array.from(wrapper.children);
+                    content.forEach(child => panel.appendChild(child));
+                    wrapper.remove();
+                }
+            });
+        }
+
+        document.querySelectorAll('input[name="loaderType"]').forEach(radio => {
+            radio.addEventListener('change', resetPanels);
+        });
+    </script>
+</body>
+</html>
